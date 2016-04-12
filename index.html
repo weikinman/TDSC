@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+	<meta name="Author" content=""/>
+	<style>
+        .login{ position: relative; padding: 59px 0 0 39px;}
+        .login-box{ background: url("/images/login_03.png") no-repeat; height:260px; width:363px;  }
+        .login-person{ background: url("/images/login_11_03_03.png") no-repeat; width:154px; height:104px; position: absolute; top: 0; left: 0; z-index: 2;}
+        .login-hand{ background: url("/images/loginhand_03_03.png") no-repeat; width: 54px; height: 92px; z-index: 1; position: absolute; left: 20px; top: 55px; transition:all 1s ease; }
+        .login-hand-ani{-webkit-transform: matrix(1,0,0,2,0,30); transform: matrix(1,0,0,2,0,30);}
+	</style>
+</head>
+<body>
+
+  <!--  <div id="clll" >1111111</div><input type="button" value="click" onclick="changeHandPos(this);" />
+    <div class="login">
+        <div class="login-person">
+            
+        </div>
+        <div class="login-hand" id="loginHand"></div>
+        <div class="login-box">
+            
+        </div>
+    </div>-->
+    
+</body>
+<script src="/common.js"></script>
+<script src="dist/TDSC.min.js"></script>
+<script>
+   
+        var arc = new TDSC.Arc({x:100,y:100,r:30,sr:0,er:2*Math.PI});
+        var arc2 = new TDSC.Arc({x:200,y:200,r:30,sr:0,er:2*Math.PI});
+        var shape = new TDSC.Shape({x:0,y:30});
+        /*shape.onRender = function(){
+
+        }*/
+        var render = new TDSC.Render({id:"canvas",w:500,h:500});
+        var scene = new TDSC.Scene();
+        scene.add(shape.add(arc,arc2));
+        //console.log(arc);
+        render.start(scene);
+        var step = 5;
+        setInterval(function(){
+            step++;
+            arc.moveBy(step,0);
+            arc2.moveBy(step,0);
+        },16.7);
+   
+</script>
+
+<script>
+    
+    var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+
+    var barChartData = {
+            labels : ["January","February","March","April","May","June","July"],
+            datasets : [
+                {
+                    fillColor : "rgba(220,220,220,0.5)",
+                    strokeColor : "rgba(220,220,220,0.8)",
+                    highlightFill: "rgba(220,220,220,0.75)",
+                    highlightStroke: "rgba(220,220,220,1)",
+                    data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+                },
+                {
+                    fillColor : "rgba(151,187,205,0.5)",
+                    strokeColor : "rgba(151,187,205,0.8)",
+                    highlightFill : "rgba(151,187,205,0.75)",
+                    highlightStroke : "rgba(151,187,205,1)",
+                    data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+                },
+                {
+                    fillColor : "rgba(0,187,205,0.5)",
+                    strokeColor : "rgba(0,187,205,0.8)",
+                    highlightFill : "rgba(0,187,205,0.75)",
+                    highlightStroke : "rgba(0,187,205,1)",
+                    data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+                }
+            ]
+
+        }
+    
+</script>
+
+</html>
