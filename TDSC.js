@@ -189,7 +189,7 @@ Vertor.prototype.toString = function(){
 Vertor.prototype.clone = function(){
     return new Vertor(this.e[0],this.e[1]);
 }
-Vertor.prototype.
+
 
 TDSC.createCanvas = function(id,w,h,parent){
     var canvas = document.createElement("canvas");

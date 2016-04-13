@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+	<meta name="Author" content=""/>
+</head>
+<body>
+
+<canvas id="canvas" height="500" width="500"></canvas>
+
+</body>
+<script>
+    function Display(){
+        this.list = [];
+        this.length = 0;
+    }
+    
+    Display.prototype.add = function(sprite){
+        var args = [].slice.call(arguments);
+        if(args.length==1){
+            this.list.push(sprite);
+            this.length++;
+        }else{
+            for(var i=0,len=args.length;i<len;i++){
+                this.list.push(args[i]);
+                this.length++;
+            }
+        }
+        
+    }
+    
+    Display.prototype.render = function(ctx){
+        for(var i=0;i<this.length;i++){
+            var item = this.list[i];
+            if(item["render"]){
+                item.render(ctx);
+            }
+        }
+    }
+    Display.prototype.each = function(callback,uber){
+        for(var i=0,len=this.length;i<len;i++){
+            var item = this.list[i];
+            callback.apply(uber || this,item,i);
+        }
+    }
+    
+    function Ball(style){
+        this.x = style.x;
+        this.y = style.y;
+        this.r = style.r;
+        this.angle = 0;
+        this.color = style.color;
+    }
+    
+    Ball.prototype.render = function(ctx){
+        ctx.save();
+        ctx.fillStyle = this.color;
+        ctx.translate(this.x-this.r/2,this.y-this.r/2);
+        ctx.beginPath();
+        ctx.arc(0,0,this.r,0,2*Math.PI,false);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+    }
+    
+    function Ship(style){
+        this.x = style.x;
+        this.y = style.y;
+        this.r = style.r;
+        this.angle = 0;
+    }
+    
+    Ship.prototype.render = function(ctx){
+        var r = this.r;
+        ctx.save();
+        ctx.translate(this.x,this.y);
+        ctx.beginPath();
+        ctx.rotate(this.angle);
+        ctx.moveTo(0,-r);
+        ctx.lineTo(r*3/4,r);
+        ctx.lineTo(0,(r/2));
+        ctx.lineTo(-r*3/4,r);
+        ctx.lineTo(0,-r);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+    }
+    
+    Ship.prototype.rotate = function(angle){
+        this.angle = angle;
+    }
+    
+    function Rect(style){
+        this.x = style.x;
+        this.y = style.y;
+        this.w = style.w;
+        this.h = style.h;
+        this.angle = 0;
+    }
+    
+    Rect.prototype.render = function(ctx){
+        ctx.save();
+        ctx.translate(this.x,this.y);
+        ctx.beginPath();
+        ctx.rotate(this.angle);
+        ctx.rect(-this.w/2,-this.h/2,this.w,this.h);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+    }
+    
+    Rect.prototype.rotate = function(angle){
+        this.angle = angle;
+    }
+    var requestAf = null
+    var sprites = [];
+     var shape = new Display();
+    var ball = new Ball({x:50,y:50,r:30,color:"red"});
+    //shape.add(ball);
+    //shape.render(ctx);
+    var ship = new Ship({x:100,y:100,r:30});
+    var rect = new Rect({x:40,y:40,w:40,h:40});
+    shape.add(ball,ship,rect);
+    var cs = null;
+    var ctx = null;
+    var step = 0;
+    ballLen = 100;
+    var poss = [];
+    
+/*    for(var j=0;j<ballLen;j++){
+        for(var k=0;k<10;k++){
+            shape.add(new Ball({
+                x:k*2+Math.random()*20,
+                y:j*2+Math.random()*20,
+                r:0.5,
+                color:"red"
+            }));
+        }
+    }*/
+    
+    
+    function init(){
+        
+        cs = document.getElementById("canvas");
+        ctx = cs.getContext("2d");
+        cs.addEventListener("mousemove",function(e){
+            var mouse = {x:e.clientX,y:e.clientY};
+            var an = Math.atan2(mouse.x-ship.x,-(mouse.y-ship.y));
+            console.log(mouse)
+            ship.rotate(an);
+        },false);
+        var startV = {},startTime = 0; endTime = 0,fa=0.7;
+        cs.addEventListener("mousedown",function(e){
+            startTime = new Date()>>0;
+            var mouse = {x:e.clientX,y:e.clientY};
+            startV = {x:0,y:0};
+            var an = Math.atan2(mouse.x-ship.x,-(mouse.y-ship.y));
+            //console.log(mouse)
+            ship.rotate(an);
+        },false);
+        
+        cs.addEventListener("mouseup",function(e){
+            end = new Date()>>0;
+            var mouse = {x:e.clientX,y:e.clientY};
+            var startV = {x:0,y:0};
+            var an = Math.atan2(mouse.x-ship.x,-(mouse.y-ship.y));
+            //console.log(mouse)
+            ship.rotate(an);
+        },false);
+        animate();
+        
+    }
+    var f=0.95,fa=0.085,Vx = 2,targetX = 200;
+    function animate(){
+        
+        /*var a = targetX-ball.x;
+        var ax = a*fa;
+        Vx+=ax;
+        Vx*=f;
+        ball.x+=Vx;*/
+        ctx.clearRect(0,0,cs.width,cs.height);
+        shape.render(ctx);
+        /*shape.each(function(obj,key){
+            key = key+10;
+             //obj.x+=obj.r*Math.cos(obj.angle*(Math.PI/180));
+             obj.y+=obj.r*Math.sin(obj.angle*(Math.PI/180));
+             obj.angle+=(key)*Math.random()*1;
+        })*/
+        requestAf = window.requestAnimationFrame(animate,16.7);
+    }
+    
+    
+    
+    
+    
+    
+    
+    window.onload = init();
+   
+    
+    
+</script>
+</html>
