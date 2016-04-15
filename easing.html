@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+	<meta name="Author" content=""/>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+
+
+</body>
+<script>
+    var obj = {height:10};
+    var startA = obj.height;
+    var easing =function(t,b,c,d){ return c*t/d + b; };
+    var sT = new Date();
+    var duration = 2000;
+    var tA = 100;
+    changeAttr();
+    function changeAttr(){
+        var c = new Date() - sT;
+        var ra = easing(c,0,1,duration);
+        obj.height = startA*1+tA*(ra*1);
+        console.log(obj.height);
+        if(ra>=1)return false;
+        requestAnimationFrame(changeAttr);
+    }
+</script>
+</html>
