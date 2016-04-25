@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+	<meta name="Author" content=""/>
+	
+</head>
+<body>
+
+<!--<div id="path" style="position: absolute; left:0;right:0; background:#999; display:block; height:30px; width:30px; border-radius:50%;">111</div>-->
+
+</body>
+<script>
+   /* var soya2d = {};
+    var TDSC = {};
+    TDSC.Tween = {};
+    soya2d.ext = function(obj,attrs,deep){
+            if(obj == undefined || attrs == undefined){ throw new Error("args not null")}
+            var i,self = this;
+            if(deep){
+                for( i in attrs){
+                    var item = attrs[i]
+                    if(typeof item === "object"){
+                        obj[i] = soya2d.ext([],item,deep);
+                    }else if(attrs.hasOwnProperty(i)){
+                        obj[i] = item;
+                    }
+                }
+            }else{
+                for( i in attrs){
+                    if(attrs.hasOwnProperty(i)){
+                        obj[i] = attrs[i];
+                    }
+                }
+            }
+        }
+    soya2d.Math = {};
+    soya2d.Math.len2D = function(p1x,p1y,p2x,p2y){
+		return Math.sqrt((p2y-p1y)*(p2y-p1y) + (p2x-p1x)*(p2x-p1x));
+	}*/
+</script>
+<!--<script src="src/TweenManager.js"></script>
+<script src="src/Path.js"></script>
+<script src="src/Easing.js"></script>
+<script src="src/PathAnimation.js"></script>-->
+<script>
+   /* var pa = document.getElementById("path");
+    var obj  ={x:0,y:0};
+
+    var path = new soya2d.Path("M0 0 c0 50 50 0 200 0 c250 0 400 150 400 200 c400 250 250 400 250 400 c150 400 0 250 0 400 Z");
+    var MrSoya = {x:0,y:0};
+    var st = new Date();
+    var pt = new soya2d.PathTween(obj,
+        path,
+        10000,{easing:TDSC.Tween.Linear}
+    );
+    pt.start();
+    run();
+    function run(){
+        var now = new Date();
+        pa.style["left"] = obj.x+"px";
+        pa.style["top"] = obj.y+"px";
+        console.log(obj)
+        pt.update(now);
+        window.requestAnimationFrame(run);
+    }*/
+</script>
+<script src="src/Path/Path.js"></script>
+<script>
+    var path = new Path("M10 10 L30 30 L30 80 Z");
+    path.setQns();
+</script>
+</html>

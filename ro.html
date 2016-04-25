@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+	<meta name="Author" content=""/>
+	<style>
+        body{ margin: 0; padding: 0; }
+        .rotate{ position:absolute; left: 0; right: 0; top: 0; bottom: 0;}
+        ul{ border-style: none; margin: 0; padding: 0;position:absolute; left: 0; right: 0; top: 0; bottom: 0;}
+        li{ border-style: none; top:0; left: 0; bottom: -100px; height: 100%; width:100px; top: -50px;  transform: rotate(-25deg);overflow: hidden; position: absolute;}
+        /*li:after{ position: absolute; z-index: 1;top:0; left: 0; bottom: 0;   background: red;}*/
+        li.active{ width:600px;}
+        .rotate li img{ transform: rotate(25deg);transform-origin:-100px 0px; top: -50px; position: absolute;  }
+	</style>
+</head>
+<body>
+<div id="testCapture" style=""></div>
+<canvas id="canvas" width="500" height="500"></canvas>
+<script src="src/utiles.js"></script>
+<script src="src/compentent/Slider.js"></script>
+<script src=""></script>
+<script>
+    window.onload = function(){
+        /*var dom = document.getElementById("testCapture");
+        //document.addEventListener("mousemove",function(){
+           var mouse =  Utils.captureMouse(document);
+            
+            document.addEventListener("mousedown",mousedown,false);
+        
+        function mousedown(e){
+            document.addEventListener("mousemove",mousemove,false);
+            document.addEventListener("mouseup",mouseup,false);
+            console.log(123);
+        }
+        function mousemove(e){
+            console.log(222);
+        }
+        function mouseup(e){
+            document.removeEventListener("mousemove",mousemove,false);
+            document.removeEventListener("mouseup",mouseup,false);
+            console.log(333);
+        }
+            */
+       // },false);
+        
+        var can = document.getElementById("canvas");
+        var ctx = can.getContext("2d");
+        var d = new Slider(-100,100,0);
+        d.onchange = draw;
+        draw();
+        function draw(){
+            ctx.clearRect(0,0,can.width,can.height)
+            d.draw(ctx);
+           // d.drag(can);
+        }
+        
+    }
+</script>
+
+</body>
+</html>

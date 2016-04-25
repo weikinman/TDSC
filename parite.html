@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+	<meta name="Author" content=""/>
+	<style>
+        *{margin: 0; padding: 0;}
+        body{ background: #000;}
+	</style>
+</head>
+<body>
+
+
+
+</body>
+<script>
+    var TDSC = {};
+    var Core = new function(){
+        /**
+         * 原型继承方法，只继承原型链里的
+         * @param {[[Type]]} child  [[Description]]
+         * @param {[[Type]]} parent [[Description]]
+         */
+        this.inherite = function(child,parent){
+            var func = function(){};
+            func.prototype = parent.prototype;
+            child.prototype = new func();
+            child.prototype.contructor = child;
+            child.prototype._super = parent;
+        }
+        this._index = 0;
+        this.ext = function(obj,attrs,deep){
+            if(obj == undefined || attrs == undefined){ throw new Error("args not null")}
+            var i,self = this;
+            if(deep){
+                for( i in attrs){
+                    var item = attrs[i]
+                    if(typeof item === "object"){
+                        obj[i] = self.ext([],item,deep);
+                    }else if(attrs.hasOwnProperty(i)){
+                        obj[i] = item;
+                    }
+                }
+            }else{
+                for( i in attrs){
+                    if(attrs.hasOwnProperty(i)){
+                        obj[i] = attrs[i];
+                    }
+                }
+            }
+        }
+        this.version = "0.0.1";
+        this.module = new function(){
+            this.modules = {};
+            /**
+             * [[Description]]
+             * @param {[[Type]]} name    [[Description]]
+             * @param {[[Type]]} factory [[Description]]
+             * test install("graph",Graph);
+                    function Graph(name,value){
+                        this.name = name;
+                        this.value = value;
+                    }
+             */
+            this.install = function(name,factory){
+                this.modules[name] = factory;
+            }
+            this.getModules = function(){
+                return this.modules;
+            }
+        }
+    }
+    TDSC = Core;
+    TDSC.Tween = {};
+    TDSC.Math = {
+	/**
+	 * π，9位精度
+	 * @constant
+	 */
+	PI : 3.141592654,
+	/**
+	 * 2π，9位精度
+	 * @constant
+	 */
+	PIM2 : 6.283185307,
+	/**
+	 * π/2，9位精度
+	 * @constant
+	 */
+	PID2 : 1.570796327,
+	/**
+	 * π/4，9位精度
+	 * @constant
+	 */
+	PID4 : 0.785398163,
+	/**
+	 * 1角度对应弧度，9位精度
+	 * @constant
+	 */
+	ONERAD : 0.017453292,
+	/**
+	 * 1弧度对应角度，9位精度
+	 * @constant
+	 */
+	ONEANG : 57.295779513,
+	/**
+	 * 转为弧度
+	 * @param {Number} ang 角度
+	 */
+	toRadian : function(ang){return ang*this.ONERAD},
+	/**
+	 * 转为角度
+	 * @param {Number} rad 弧度
+	 */
+	toAngle : function(rad){return rad*this.ONEANG},
+	/**
+	 * 获得随机数，浮点型
+	 * @param {Number} a 上限
+	 * @param {Number} b 下限
+	 */
+	randomf : function(a,b){return a+(Math.random()*(b-a));},
+    /**
+     * 获得随机数，整型
+     * @param a 上限
+     * @param b 下限
+     * @return {Number}
+     */
+	randomi: function(a,b){return (a+(Math.random()*(b-a)))>>0;},
+    /**
+     * 对浮点数取整，四舍五入
+     * @param {Number} n 浮点数
+     */
+    round:function(n){
+        return (0.5 + n)>>0;
+    },
+    /**
+     * 对浮点数取整，小数部分被舍弃
+     * @param {Number} n 浮点数
+     */
+    floor:function(n){
+        return n|0;
+    },
+	/**
+	 * 计算平面两点距离
+	 * @param {Number} p1x 
+	 * @param {Number} p1y 
+	 * @param {Number} p2x 
+	 * @param {Number} p2y 
+	 * @returns 两点距离值
+	 */
+	len2D:function(p1x,p1y,p2x,p2y){
+		return Math.sqrt((p2y-p1y)*(p2y-p1y) + (p2x-p1x)*(p2x-p1x));
+	},
+	/**
+	 * 快速计算平面两点距离
+	 * 注意：此方法会产生少量误差，可以用在精度不高，但要求速度的场景中
+	 * @param {Number} dx X轴坐标差值
+	 * @param {Number} dy Y轴坐标差值
+	 * @returns 两点距离值
+	 */
+	len2Df:function(dx,dy){//D-values
+		dx = Math.abs(dx);
+		dy = Math.abs(dy);
+		
+		var min = Math.min(dx,dy);
+		
+		return (dx+dy-(min>>1)-(min>>2)+(min>>4));
+	},
+	/**
+	 * sin表，包含0到360度，共361个正玄值，可以通过SINTABLE[0-360整数角度]，直接引用
+	 * @constant
+	 */
+	SINTABLE : (function(){
+		var t = new Float32Array(361);
+		var r = 0.017453292;
+		for(var ang=0;ang<=360;ang++){
+		    var theta = ang*r;
+		    var rs = Math.sin(theta);
+		    t[ang] = rs
+		}
+		return t;
+	})(),
+	/**
+	 * cos表，包含0到360度，共361个余玄值，可以通过COSTABLE[0-360整数角度]，直接引用
+	 * @constant
+	 */
+	COSTABLE : (function(){
+		var t = new Float32Array(361);
+		var r = 0.017453292;
+		for(var ang=0;ang<=360;ang++){
+		    var theta = ang*r;
+		    var rs = Math.cos(theta);
+		    t[ang] = rs
+		}
+		return t;
+	})()
+};
+</script>
+<script src="src/Easing.js"></script>
+<script src="src/Path.js"></script>
+<script src="src/PathAnimation.js"></script>
+<script src="src/TweenManager.js"></script>
+<script src="src/Tween.js"></script>
+<script>
+    function createCanvas(width,height){
+        var canvas = document.createElement('canvas');
+        canvas.innerHTML = "not support canvas";
+        canvas.width = width || 500;
+        canvas.height = height  || 500;
+        document.body.appendChild(canvas);
+        return canvas;
+    }
+    
+    function getRandom(min,max){
+        var random = Math.random();
+        var _max = random*max;
+        return Math.floor(_max+min);
+    }
+    
+    //console.log(getRandom(1,5));
+    
+    function Ball(x,y,r,color){
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.Vx = 0;
+        this.Vy = 0;
+        this.apache = 1;
+        this.color = color || "rgba(255,255,255,"+this.apache+")";
+    }
+    
+    Ball.prototype.draw = function(ctx){
+        ctx.save();
+        ctx.fillStyle = this.color;
+        ctx.translate(this.x,this.y);
+        ctx.globalAlpha = this.apache;
+        ctx.beginPath();
+        ctx.arc(0,0,this.r,0,2*Math.PI,false);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+    }
+    
+    var canvas = null;
+    var ctx = null;
+    var parites  = [];
+    var paritesCount = 300;
+    var type = null;
+    var isDebug = true;
+    
+    
+    
+    function caLog(str){
+        if(isDebug){
+            console.log(str);
+        }
+    }
+    
+    function createNewBall(){
+        var grient = ctx.createRadialGradient(0,0,1,getRandom(2,5),getRandom(2,5),getRandom(3,6));
+            grient.addColorStop(0,"#fff");
+            grient.addColorStop(0.5,"rgba(0,0,0,0.0)");
+            var ball = new Ball(getRandom(90,100),getRandom(0,100),getRandom(1,5),grient);
+            
+            ball.Vx=getRandom(1,5);
+            ball.Vy=0;
+        return ball;
+        
+    }
+    var paths = [];
+    function init(){
+        canvas = createCanvas(1200,700);
+        ctx = canvas.getContext('2d');
+        
+        for(var i=0; i< paritesCount; i++){
+            var ball = createNewBall();
+            parites.push(ball);
+            var first = getRandom(490,510)+" "+getRandom(0,15);
+            var second = getRandom(490,510)+" "+getRandom(400,510);
+            var third = getRandom(0,105)+" "+getRandom(400,510);
+            var forth = getRandom(0,105)+" "+getRandom(0,105);
+            var path = new TDSC.Path("M"+first+" L"+second+" L"+third+" L"+forth+" z");
+            var pt = new TDSC.PathTween(ball,path,10000,{iteration:-1});
+            pt.start();
+            paths.push(pt);
+        }
+        caLog(parites)
+        draw();
+    }
+    
+    function draw(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        var now = new Date();
+        TweenManager.update(now);
+        for(var i=0; i< paritesCount; i++){
+            var ball = parites[i];
+            
+            /*ball.x+=ball.Vx;
+            ball.y+=ball.Vy;
+            if(ball.x>canvas.width || ball.y>canvas.height){
+              //  caLog(ball.x)
+                parites.splice(i,1);
+                var ball = createNewBall();
+                parites.push(ball);
+            }*/
+            
+            ball.draw(ctx);
+        }
+        
+        requestAnimationFrame(draw);
+    }
+    
+    window.onload = init();
+    
+</script>
+</html>

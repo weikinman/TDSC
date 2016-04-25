@@ -80,12 +80,12 @@
                 return this.ctx.fillStyle;
             }
         }
-        this.storkeStyle = function(color){
+        this.strokeStyle = function(color){
             if(color){
-                this.ctx.storkeStyle = color;
+                this.ctx.strokeStyle = color;
                 return this;
             }else{
-                return this.ctx.storkeStyle;
+                return this.ctx.strokeStyle;
             }
         }
         this.opacity = function(color){
@@ -238,22 +238,88 @@
             this.ctx.arc(x,y,r,sr || 0,er||Math.PI*2);
             return this;
         }
-        
-        this.map = function(tex,dx,dy,dw,dh,sx,sy,sw,sh){
-            sx = sx || 0;
-            sy = sy || 0;
-            sw = sw || tex.w;
-            sh = sh || tex.h;
-
-            if(sw===0 || sh===0 || dh===0 || dh===0){
-                return;
+        /**
+         * [[Description]]
+         * @param {string} sl   虚线每段的长度
+         * @param {string} el   间隔
+         * @param {string} sx   开始位置
+         * @param {string} sy   结束位置
+         * @param {string} type v 竖  h  横
+         * @param {string} long 长度
+         */
+        this.dattsh = function(sl,el,sx,sy,type,long,color){
+            long = long || 200;
+            switch(type){
+                case "v":
+                    var suml = sl + el;
+                    var len = Math.ceil(long/suml);
+                    this.save();
+                    this.strokeStyle(color);
+                    this.ctx.moveTo(sx,sy);
+                    for(var i=1 ; i <= len ; i++){
+                        this.ctx.lineTo(sx,sy+sl*i+el*(i-1));
+                        this.ctx.moveTo(sx,sy+sl*i+el*i);
+                    }
+                    this.stroke();
+                    this.restore();
+                    break;
+                case "h":
+                    var suml = sl + el;
+                    var len = Math.ceil(long/suml);
+                    this.save();
+                    this.strokeStyle(color);
+                    this.ctx.moveTo(sx,sy);
+                    for(var i=1 ; i <= len ; i++){
+                        this.ctx.lineTo(sx+sl*i+el*(i-1),sy);
+                        this.ctx.moveTo(sx+sl*i+el*i,sy);
+                    }
+                    this.stroke();
+                    this.restore();
+                    break;
             }
-
-            this.ctx.drawImage(tex.__data,
-                                sx>>0,sy>>0,sw>>0,sh>>0,
-                                dx>>0,dy>>0,dw>>0,dh>>0);
-            return this;
-        };
+        }
+        /**
+         * [[Description]]
+         * @param {[[Type]]} sx   [[Description]]
+         * @param {[[Type]]} sy   [[Description]]
+         * @param {number} vl   竖向的间隔
+         * @param {number} hl   横向的间隔
+         * @param {[[Type]]} long [[Description]]
+         */
+        this.grid = function(sx,sy,vl,hl,vlong,hlong,color){
+            var da = new Date();
+            vlong = vlong || 200;
+            hlong = hlong || 200;
+            var sumv = vl+1,sumH = hl+1;
+            var lenv = Math.ceil(vlong/sumv), lenh = Math.ceil(hlong/sumH);
+            this.push();
+            this.strokeStyle(color);
+            this.beginPath();
+            for(var i=0; i<=lenv;i++){
+                this.ctx.moveTo(sx+i*vl,sy);
+                this.ctx.lineTo(sx+i*vl,sy+vlong);
+            }
+            for(var i=0; i<=lenh;i++){
+                this.ctx.moveTo(sx,sy+i*hl);
+                this.ctx.lineTo(sx+hlong,sy+i*hl);
+            }
+            this.closePath();
+            this.stroke();
+            this.pop();
+            console.log(new Date()*1-da*1);
+        }
+        
+        this.CoordinateAxes = function(opts){
+            opts = opts || {
+                sx:100,
+                sy:100,
+                long:300,
+                xo:"a",
+                yo:"m"
+                
+            }
+        }
+       
     }
     
     
@@ -261,5 +327,7 @@
         module.exports = Graphics;
     }else if(typeof define !== "undefined"){
         define(function(){return Graphics});
+    }else{
+        window.Graphics = Graphics;
     }
 })();

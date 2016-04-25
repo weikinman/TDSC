@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+	<meta name="Author" content=""/>
+</head>
+<body>
+    <table id="ttt" style="background:#ddd; position: absolute;"><tr><td>1111</td></tr></table>
+</body>
+<script>
+    var TDSC = {};
+    TDSC.Tween = {};
+</script>
+<script src="src/Easing.js"></script>
+<script src="src/AnimationManager.js"></script>
+<script src="src/Animation.js"></script>
+<script>
+    var obj = {
+        height:10,
+        left:10
+    }
+    var x = 10;
+    
+    function init(){
+        var ttt = document.getElementById("ttt");
+        ttt.style.height = obj.height+"px";
+        
+        //console.log(new Tween(ttt,{height:100})._calc());
+        
+        var twe = new Animation(obj,{height:100,left:300},2000,{Loops:4,isInverse:true,easing:TDSC.Tween.Quart.InOut});
+        twe.start();
+        //twe.updata();
+        
+        ani();
+    }
+    
+    function ani(){
+        var now = new Date()*1;
+        AnimationManager.update(now*1,1000);
+        console.log(obj.height);
+        ttt.style.height = obj.height+"px";
+        ttt.style.left = obj.left+"px";
+       // console.log(AnimationManager.getLength())
+        window.requestAnimationFrame(ani);
+    }
+    
+    window.onload = init();
+</script>
+</html>
